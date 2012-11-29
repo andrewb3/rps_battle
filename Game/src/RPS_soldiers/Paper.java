@@ -3,7 +3,7 @@ package RPS_soldiers;
 public class Paper extends Type{
 
 	Paper(int level){this.setLevel(level);}
-
+//testing comment
 	@Override
 	public float getMultiplyer(Type other)throws InvalidTypeException {
 		if(other.getName().equals("Paper"))
