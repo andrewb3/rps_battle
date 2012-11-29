@@ -1,0 +1,27 @@
+the goal of the game: bring the infrastructure of your oponent to zero.  
+you do this by building regiments with specific 
+aspects that fight those of your oponent.
+
+world layout:
+the playing field is a rectangular field that has 2 civilizations 
+at oposite ends, and each square cell can house a regiment or a 
+city
+
+class layout:
+-player: has a list of regiments deployed, and a population, and a
+location item for the location of the city, and a int for 
+infrastrucutre values for the city.
+
+-location: holds x and y values of a cell, used for placement of
+cities and regiments
+
+-attribute classes: rock, paper, and scisors.  they handle
+the apropriate damage multiplyer for attacking a different regiment
+
+-regiment: the primary class for army forces, they store a location
+an int for num of soldiers, and a attribute, and a name
+
+-world: the class for holding all the locations in a given world,
+through a 2d array of locations, this will handle how players move 
+their forces, and get all locations it can move to 
+
