@@ -1,0 +1,56 @@
+class Type
+	def initialize(level, name)
+		@level = level
+		@name = name
+  end
+  def getName
+    retr name
+  end
+end
+
+
+class Scissor < Type
+  def initialize(level)
+    super(level, Scissor)
+  end
+  def getMultiplyer(other)
+    if (getName(other) == Rock)
+      puts .75
+    else if (getName(other) == Scissor)
+      puts 1
+    else
+      puts 1.25
+  end  
+end
+
+class Rock < Type
+  def initialize(level)
+    super(level, Rock)
+  end
+  def getMultiplyer(other)
+    if (getName(other) == Rock)
+      puts 1
+    else if (getName(other) == Scissor)
+      puts 1.25
+    else
+      puts .75
+  end  
+end
+
+class Paper < Type
+  def initialize(level)
+    super(level, Paper)
+  end
+  def getMultiplyer(other)
+    if (getName(other) == Rock)
+      puts 1.25
+    else if (getName(other) == Scissor)
+      puts .75
+    else
+      puts 1
+  end  
+end
+
+class Regiment
+  def initialize(Type, level, soldNum, posX, posY)
+end
