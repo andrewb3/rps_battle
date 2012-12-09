@@ -123,9 +123,13 @@ class Player
   def initialize(name, location)
     @name = name
     @city = City(location)
-    @regiments = new(array)
+    @regiments = Hash.new
+    @regiments.default = nil
   end
   def reinforce(locReg1, locReg2)
+  end
+  def getRegAtLoc(location)
+	return regiments[location]
   end
 end
 
@@ -149,8 +153,48 @@ class City
   end
 end
 
-class world
+class World
   def initialize(rows, cols)
-    
+    @rows = rows
+    @cols = cols
+    @worldmap = Hash.new
+    for i in 0..(rows - 1)
+      for j in 0..(cols - 1)
+        worldmap[[i,j]] = Location,new(i, j)
+      end
+    end
+  end
+  def getLocation(row, col)
+    if (row >= 0 && row < rows && col >= 0 && col < cols)
+      return worldmap[[row,col]]
+    else
+      return nil
+    end
   end
 end
+
+
+class game
+  def initialize(rows, cols, name1, x1, x2, y1, y2, name2)
+    @world = World.new(rows, cols) 
+    @player1 = Player.new(name1, world.getLocation(x1,x2))
+    @player2 = Player.new(name2, world.getLocation(y1,y2))
+  end
+  def main()
+    play = true;
+    introPrompt()
+    while(play)
+      promptPlayer(Player1)
+      if player2.isDead()
+        victory(Player2)
+        break
+      end
+      promptPlayer(Player2)
+      if player1.isDead()
+        victory(Player2)
+        break
+      end
+    end
+  end    
+end        
+      
