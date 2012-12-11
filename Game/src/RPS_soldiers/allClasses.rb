@@ -140,17 +140,6 @@ class Player
   def loseRegiment(loc)
     regiments.delete[loc]
   end
-  def reinforce(fromLoc, toLoc)
-    if (regiments[fromLoc], regiments[toLoc])
-      x = regiements[toLoc].reinforce(fromLoc)
-      regiments[fromLoc].killSoldiers(x)
-      regiments.delete[fromLoc]
-      return true
-    end
-    else
-      return false
-    end
-  end
   def attack(otherPlayer, fromLoc, toLoc)
     x = regiments[fromLoc].fight(otherPlayer.regiments[toLoc])
 	if x == 0 
@@ -234,3 +223,64 @@ class game
   end    
 end        
       
+class SplashScreen < Gosu::Window
+    def initialize
+       super 1000,700,false
+       self.caption = 'RPS BATTLE'      
+      
+       @background_image = Gosu::Image.new(self, "TPN70.gif")
+      
+    end
+   
+    def update
+     
+    end
+   
+    def draw
+      @grid = Hash.new
+      for i in 0..(6)
+        for j in 0..(9)
+          draw_quad(j* 100 ,  i * 70 , Gosu::Color.argb(0xff00ff00), (j * 100) + 100, i * 70, Gosu::Color.argb(0xffffffff), j * 100, (i * 70) + 70, Gosu::Color.argb(0xffffffff), (j * 100) + 100, (i * 70) + 70, Gosu::Color.argb(0xff00ff00), z = 0, mode = :default)
+        end
+      end
+     
+      #draw_line(0, 0, Gosu::Color.argb(0xff808080), 100, 100, Gosu::Color.argb(0xff808080), z = 0, mode = :default)
+    end
+end
+
+class GameWindow < Gosu::Window
+    def initialize
+       super 640,480,false
+       self.caption = 'RPS BATTLE'      
+      
+       @background_image = Gosu::Image.new(self, "TPN70.gif")
+    end
+   
+    def update
+     
+    end
+   
+    def draw
+      @background_image.draw(0,0,0)
+    end
+end
+
+class EndScreen < Gosu::Window
+    def initialize
+       super 640,480,false
+       self.caption = 'RPS BATTLE'
+      
+       @background_image = Gosu::Image.new(self, "TPN70.gif")
+    end
+   
+    def update
+     
+    end
+   
+    def draw
+      @background_image.draw(0,0,0)
+    end
+end
+
+window = SplashScreen.new
+window.show
