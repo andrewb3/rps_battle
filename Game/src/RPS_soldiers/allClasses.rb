@@ -115,7 +115,7 @@ class Regiment
   end
   def reinforce(otherReg)
     @soldNum += otherReg.getSoldNum()
-    return true
+    return otherReg.getSoldNum()
   end
 end
 
@@ -126,10 +126,21 @@ class Player
     @regiments = Hash.new
     @regiments.default = nil
   end
-  def reinforce(locReg1, locReg2)
+  def reinforce(fromLoc, toLoc)
+    if (regiments[fromLoc], regiments[toLoc])
+      x = regiements[toLoc].reinforce(fromLoc)
+      regiments[fromLoc].killSoldiers(x)
+      regiments.delete[fromLoc]
+      return true
+    end
+    else
+      return false
+    end
+  end
+  def attack(otherPlayer, fromLoc, toLoc)
   end
   def getRegAtLoc(location)
-	return regiments[location]
+    return regiments[location]
   end
 end
 
