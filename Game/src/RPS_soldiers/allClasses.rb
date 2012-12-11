@@ -137,6 +137,9 @@ class Player
     @regiments = Hash.new
     @regiments.default = nil
   end
+  def loseRegiment(loc)
+    regiments.delete[loc]
+  end
   def reinforce(fromLoc, toLoc)
     if (regiments[fromLoc], regiments[toLoc])
       x = regiements[toLoc].reinforce(fromLoc)
@@ -149,6 +152,17 @@ class Player
     end
   end
   def attack(otherPlayer, fromLoc, toLoc)
+    x = regiments[fromLoc].fight(otherPlayer.regiments[toLoc])
+	if x == 0 
+		regiments[fromloc].delete
+		otherPlayer.regiments.remove[toLoc]
+	else if x == 1
+		regiments.delete[fromloc]
+    else
+		otherPlayer.loseregiment(toLoc)
+		regiments[toLoc] = regiments[fromLoc]
+		regiments.delete[fromLoc]
+    end
   end
   def getRegAtLoc(location)
     return regiments[location]
