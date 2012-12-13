@@ -226,7 +226,7 @@ end
 class City
   def initialize(location)
     @location = location
-    @health = 1000 #change for magic numbers...
+    @health = 800 #change for magic numbers...
   end
 
   def damageCity(damageAmt)
@@ -294,7 +294,7 @@ class GameWindow < Gosu::Window
   def initialize
     super 1000,800,false
     self.caption = 'RPS BATTLE'
-    @state = "normal"
+    @state = "start"
     @mouseImage = Gosu::Image.new(self, "Sword.png")
     @cityImage = Gosu::Image.new(self,"castle.png")
     @paperImage = Gosu::Image.new(self,"paper.png")
@@ -302,6 +302,9 @@ class GameWindow < Gosu::Window
     @scissorImage = Gosu::Image.new(self,"scissors.png")
     @cancelImage = Gosu::Image.new(self,"cancel.png")
     @legoImage = Gosu::Image.new(self,"legoImage.png")
+    @startImage = Gosu::Image.new(self,"introImage.png")
+    @endImage1 = Gosu::Image.new(self,"endImage1.png")
+    @endImage2 = Gosu::Image.new(self,"endImage2.png")
     @validMove = false;
     @stage = "recruit"
     @turn = 0
@@ -336,7 +339,16 @@ class GameWindow < Gosu::Window
       @cancelImage = @legoImage  
     end 
       #normal state is the grid layout
-    if @state == "normal"
+    if @state == "start"
+      @rpsIntro.play
+      @startImage.draw(0,0,0)
+    elsif @state == "player1wins"
+    @endImage1.draw(0,0,0)
+      
+    elsif @state == "player2wins"
+    @endImage2.draw(0,0,0)
+      
+    elsif @state == "normal"
       for i in 0..(6)
         for j in 0..(9)
           draw_quad(j* 100 ,  i * 100 , Gosu::Color.argb(0xff00ff00), (j * 100) + 100, i * 100, Gosu::Color.argb(0xff00ff00), j * 100, (i * 100) + 100, Gosu::Color.argb(0xff00ff00), (j * 100) + 100, (i * 100) + 100, Gosu::Color.argb(0xff00ff00), z = 0, mode = :default)
@@ -413,7 +425,6 @@ class GameWindow < Gosu::Window
         end
       end
       if @msg == "Welcome"
-        @rpsIntro.play
         @font.draw("Welcome to RPS: Ultimate Battles of all Time", 100,700,0, factor_x=1,factor_y=1,color=0xffff0000, mode = :default)
         @font.draw("Click City to Recruit Your Army", 100, 740, 0,  factor_x=1,factor_y=1,color = 0xffff0f00, mode = :default)
         @font.draw("DESTROY YOUR OPPONENT CITY", 100, 780, 0, factor_x=1, factor_y=1, color = 0xffff0000, mode = :default)
@@ -461,15 +472,21 @@ class GameWindow < Gosu::Window
   def button_down(id)
     case id
     when Gosu::MsLeft
-
       @X =  (mouse_x / 100 ).to_i
       @Y =  (mouse_y / 100 ).to_i
       @coordX = @X * 100
       @coordY = @Y * 100
+      ##Easter eggs...
       if mouse_x > 980 and mouse_y > 789
         @mode = "wacky"
       end
-      
+      if @state == "player1wins" or @state == "player2wins"
+        if mouse_x < 20 and mouse_y < 20
+          @winner = nil
+          @state = "normal"
+          @stage = "recruit"
+        end
+      end
       ##loop to update on click
       ##state normal represents grid
       ##state recruit represents recruiting window
@@ -582,6 +599,7 @@ class GameWindow < Gosu::Window
                    @world.getPlayer(@pl).getCity().damageCity(75)                
                       regime.addSold(75)
                       @turn = @turn + 1
+                      @stage = "recruit"
                       whoseTurn()
                       @blocked = true
                  else
@@ -647,23 +665,35 @@ class GameWindow < Gosu::Window
           @state = "normal"
         end
       end     
+      if @state == "start"
+        @state = "normal"
+      end
     end
     @world.getPlayerOne().removeDeadRegimes()
     @world.getPlayerTwo().removeDeadRegimes()
+    if @state == "player1wins" or @state == "player2wins"
+      if mouse_x < 20 and mouse_y < 20
+        @state = "normal"
+      end
+    end
    
   end
 #end if someones base is destroyed
   def update
     if @world.getPlayerOne().getCity().isDead()
-      @winner = "PLAYER TWO"
       if @playOnce
+        @state = "player2wins"
+        @winner = "PLAYER TWO"
+
         @player2wins.play
         @playOnce = false
       end
       @stage = "end"
     elsif @world.getPlayerTwo().getCity().isDead()
-      @winner = "PLAYER ONE"
       if @playOnce
+        @state = "player1wins"
+        @winner = "PLAYER ONE"
+
         @playOnce = false
         @player1wins.play
       end
@@ -684,6 +714,7 @@ class GameWindow < Gosu::Window
         @playerTurn = 1
       end
     end
+ 
   end
 end
 
