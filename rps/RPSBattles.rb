@@ -530,8 +530,8 @@ class GameWindow < Gosu::Window
                        if ( @RegimeToMove and regime.getName == @RegimeToMove.getName)
                          regime.addSold(@RegimeToMove.getSoldNum)
                          @world.getPlayer(@pl).removeRegime(@RegimeToMove)
-                         @turn = @turn + 1
-                         whoseTurn()
+                         #@turn = @turn + 1
+                         #whoseTurn()
                          @stage = "recruit"
                          @alreadyMoved = true
                         break
