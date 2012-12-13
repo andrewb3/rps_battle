@@ -301,11 +301,13 @@ class GameWindow < Gosu::Window
     @rockImage = Gosu::Image.new(self,"rock.png")
     @scissorImage = Gosu::Image.new(self,"scissors.png")
     @cancelImage = Gosu::Image.new(self,"cancel.png")
+    @legoImage = Gosu::Image.new(self,"legoImage.png")
     @validMove = false;
     @stage = "recruit"
     @turn = 0
     @pl = 1
     @opp = 2
+    @mode = "normal"
     @playOnce = true
     @RegimeToMove = nil
     @msg = "Welcome"
@@ -326,14 +328,23 @@ class GameWindow < Gosu::Window
   end
 
   def draw
-    #normal state is the grid layout
+    if @mode == "wacky"
+      @cityImage = @legoImage
+      @paperImage = @legoImage
+      @rockImage = @legoImage
+      @scissorImage = @legoImage
+      @cancelImage = @legoImage  
+    end 
+      #normal state is the grid layout
     if @state == "normal"
       for i in 0..(6)
         for j in 0..(9)
           draw_quad(j* 100 ,  i * 100 , Gosu::Color.argb(0xff00ff00), (j * 100) + 100, i * 100, Gosu::Color.argb(0xff00ff00), j * 100, (i * 100) + 100, Gosu::Color.argb(0xff00ff00), (j * 100) + 100, (i * 100) + 100, Gosu::Color.argb(0xff00ff00), z = 0, mode = :default)
           if @world.getPlayerOne().getCity().getLocation().eql?(Location.new(j,i))
+            
             @cityImage.draw(j*100,i*100,0)
             @font.draw("Health: " + @world.getPlayerOne().getCity().getHealth().to_s,j*100,i*100,0, factor_x=1,factor_y=1,color = 0xffff0f00, mode = :default)
+              
             @font.draw(@world.getPlayerOne().getName(),j*100,i*110,0, factor_x=1,factor_y=1,color = 0xffff0f00, mode = :default)
 
           elsif @world.getPlayerTwo().getCity().getLocation().eql?(Location.new(j,i))
@@ -455,6 +466,9 @@ class GameWindow < Gosu::Window
       @Y =  (mouse_y / 100 ).to_i
       @coordX = @X * 100
       @coordY = @Y * 100
+      if mouse_x > 980 and mouse_y > 789
+        @mode = "wacky"
+      end
       
       ##loop to update on click
       ##state normal represents grid
@@ -465,7 +479,7 @@ class GameWindow < Gosu::Window
       ##placement is selecting place to move in regiment
       ##checks for errors and returns to recruit stage if something goes wrong
       ##messages also sent for user validation
-      if @state == "normal"  and @X >= 0 and @X <= 9 and @Y >= 0 and @Y <= 9
+      if @state == "normal"  and @X >= 0 and @X <= 9 and @Y >= 0 and @Y <= 6
 
         @tempLoc = Location.new(@X,@Y)
         @curPlayerCityPosition = @world.getPlayer(@pl).getCity().getLocation()
