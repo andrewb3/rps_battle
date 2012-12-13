@@ -572,6 +572,8 @@ class GameWindow < Gosu::Window
                       @blocked = true
                  else
                    @blocked = true
+                   @stage = 'recruit'
+                   @msg = "Looks like your having trouble placing regime, lets go back..."
                  end
                end
              end
