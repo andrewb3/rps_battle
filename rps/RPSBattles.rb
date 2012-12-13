@@ -2,7 +2,7 @@ require 'set'
 require 'rubygems'
 require 'gosu'
 
-## project by James Nichols, Andrew Bosnik, and Lewis Brant
+## project by James Nichols, Andrew Bosco, and Lewis Brant
 
 class Type
   def initialize(name)
@@ -513,7 +513,7 @@ class GameWindow < Gosu::Window
             #@RegimeToMove = nil
           else
             @oppRegimes.each do |regime|
-                   if regime.getLocation().eql?(Location.new(@X,@Y))
+                   if regime.getLocation().eql?(@tempLoc)
                      @RegimeToMove.fight(regime)
                      @attacked = true
                      #@RegimeToMove = nil
@@ -525,33 +525,42 @@ class GameWindow < Gosu::Window
                    end
                  end
                  if @attacked == false
-                   @curPlRegimes.each do |regime|
-                     if regime.getLocation().eql?(Location.new(@X,@Y))
+                   @world.getPlayer(@pl).getRegimes.each do |regime|
+                     if regime.getLocation().eql?(@tempLoc)
                        if ( @RegimeToMove and regime.getName == @RegimeToMove.getName)
                          regime.addSold(@RegimeToMove.getSoldNum)
                          @world.getPlayer(@pl).removeRegime(@RegimeToMove)
                          @turn = @turn + 1
                          whoseTurn()
                          @stage = "recruit"
-                      
                          @alreadyMoved = true
                         break
                        else
                          @blocked = true  
                          @msg =  "You cant move there! We'll go back to recruit phase"
                          @stage = "recruit"
+                         puts "ffff"
                          @RegimeToMove = nil
+                         break
                      end  
                    end
-                   if !(@blocked or (@alreadyMoved or @attacked)) and @RegimeToMove
+
+                 end 
+                   if !@blocked or (@alreadyMoved or @attacked) and @RegimeToMove
+                     if !@blocked
                      @RegimeToMove.move(Location.new(@X,@Y))
+                     if !(@blocked or @alreadyMoved or @attacked) and @RegimeToMove
+                       puts "true"
+                     else
+                       puts "false"
+                     end
+                     end
                      @RegimeToMove = nil
                      @turn = @turn + 1
                      @stage = "recruit"
                      @msg = "Oh what strategy and cunning!"
                      whoseTurn()
                    end
-                 end 
                end
              end    
         elsif @stage == "placement"
@@ -631,7 +640,7 @@ class GameWindow < Gosu::Window
     @world.getPlayerTwo().removeDeadRegimes()
    
   end
-#end if someones ba se is destroyed
+#end if someones base is destroyed
   def update
     if @world.getPlayerOne().getCity().isDead()
       @winner = "PLAYER TWO"
