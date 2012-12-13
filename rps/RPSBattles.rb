@@ -32,11 +32,11 @@ class Scissor < Type
 
   def getMultiplyer(other)
     if (other.getName() == "Rock")
-      return 0.8
+      return 0.5
     elsif (other.getName() == "Scissor")
       return 1
     else
-      return 1.25
+      return 2
     end
   end
 end
@@ -50,9 +50,9 @@ class Rock < Type
     if (other.getName() == "Rock")
       return 1
     elsif (other.getName() == "Scissor")
-      return 1.25
+      return 2
     else
-      return 0.8
+      return 0.5
     end
   end
 end
@@ -64,9 +64,9 @@ class Paper < Type
 
   def getMultiplyer(other)
     if (other.getName() == "Rock")
-      return 1.25
+      return 2
     elsif (other.getName() == "Scissor")
-      return 0.8
+      return 0.5
     else
       return 1
     end
@@ -292,7 +292,7 @@ end
 
 class GameWindow < Gosu::Window
   def initialize
-    super 1000,700,false
+    super 1000,800,false
     self.caption = 'RPS BATTLE'
     @state = "normal"
     @mouseImage = Gosu::Image.new(self, "Sword.png")
@@ -403,11 +403,11 @@ class GameWindow < Gosu::Window
       end
       if @msg == "Welcome"
         @rpsIntro.play
-        @font.draw("Welcome to RPS: Ultimate Battles of all Time", 100,100,0, factor_x=1,factor_y=1,color=0xffff0000, mode = :default)
-        @font.draw("Click City to Recruit Your Army", 100, 140, 0,  factor_x=1,factor_y=1,color = 0xffff0f00, mode = :default)
-        @font.draw("DESTROY YOUR OPPONENT CITY", 100, 180, 0, factor_x=1, factor_y=1, color = 0xffff0000, mode = :default)
+        @font.draw("Welcome to RPS: Ultimate Battles of all Time", 100,700,0, factor_x=1,factor_y=1,color=0xffff0000, mode = :default)
+        @font.draw("Click City to Recruit Your Army", 100, 740, 0,  factor_x=1,factor_y=1,color = 0xffff0f00, mode = :default)
+        @font.draw("DESTROY YOUR OPPONENT CITY", 100, 780, 0, factor_x=1, factor_y=1, color = 0xffff0000, mode = :default)
       else
-        @font.draw(@msg,0,40,0, factor_x=1,factor_y=1,color = 0xffff0f00, mode = :default)
+        @font.draw(@msg,0,740,0, factor_x=1,factor_y=1,color = 0xffff0f00, mode = :default)
       end
       promptPlayer = ""
       if @stage == "recruit"
@@ -417,16 +417,16 @@ class GameWindow < Gosu::Window
       elsif @stage == "placement"
         promptPlayer = "Place your new Regiment next to your city!"
       end
-        @font.draw(promptPlayer,380,60,0, factor_x=1,factor_y=1,color = 0xffff0f00, mode = :default)
+        @font.draw(promptPlayer,380,760,0, factor_x=1,factor_y=1,color = 0xffff0f00, mode = :default)
         if @stage == "placement"
-         @font.draw("You Selected " + @choice , 480, 80, 0, factor_x=1, factor_y=1, color = 0xffff0000, mode = :default)
+         @font.draw("You Selected " + @choice , 80, 780, 0, factor_x=1, factor_y=1, color = 0xffff0000, mode = :default)
         end
       if @playerTurn == 1
-        @font.draw("It is Player One's turn!",480,20,0, factor_x=1,factor_y=1,color = 0xffff0f00, mode = :default)
+        @font.draw("It is Player One's turn!",580,720,0, factor_x=1,factor_y=1,color = 0xffff0f00, mode = :default)
     
       elsif @playerTurn == 2
        
-        @font.draw("It is Player Two's turn!",480,20,0, factor_x=1,factor_y=1,color = 0xffff0f00, mode = :default)
+        @font.draw("It is Player Two's turn!",580,720,0, factor_x=1,factor_y=1,color = 0xffff0f00, mode = :default)
       end
 
       @mouseImage.draw(mouse_x,mouse_y,0)
@@ -539,7 +539,7 @@ class GameWindow < Gosu::Window
                          @blocked = true  
                          @msg =  "You cant move there! We'll go back to recruit phase"
                          @stage = "recruit"
-                         puts "ffff"
+                         
                          @RegimeToMove = nil
                          break
                      end  
@@ -547,14 +547,10 @@ class GameWindow < Gosu::Window
 
                  end 
                    if !@blocked or (@alreadyMoved or @attacked) and @RegimeToMove
-                     if !@blocked
+                     
                      @RegimeToMove.move(Location.new(@X,@Y))
-                     if !(@blocked or @alreadyMoved or @attacked) and @RegimeToMove
-                       puts "true"
-                     else
-                       puts "false"
-                     end
-                     end
+                     
+                     
                      @RegimeToMove = nil
                      @turn = @turn + 1
                      @stage = "recruit"
