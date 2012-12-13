@@ -139,7 +139,6 @@ class Regime
   def getName
     return @Type.getName
   end
-  
   def getType
     return @Type
   end
@@ -311,21 +310,15 @@ class GameWindow < Gosu::Window
     @turn = 0
     @pl = 1
     @opp = 2
-    @playOnce = true
     @RegimeToMove = nil
-    @msg = "Welcome"
+    @msg = ""
+    
     @font = Gosu::Font.new(self, Gosu::default_font_name,20)
     @fontHuge = Gosu::Font.new(self, Gosu::default_font_name,50)
     @playerTurn = 1
     @boxCoords = []
     @clickQueue = []
-    @rpsIntro = Gosu::Song.new(self, "rpsintro.ogg")
-    @scissorsSound = Gosu::Sample.new(self, "scissors.ogg")
-    @rockSound = Gosu::Sample.new(self, "rock.ogg")
-    @paperSound = Gosu::Sample.new(self, "paper.ogg")
-    @battleSound = Gosu::Sample.new(self, "battle.ogg")
-    @player1wins = Gosu::Song.new(self, "p1wins.ogg")
-    @player2wins = Gosu::Song.new(self, "p2wins.ogg")
+
     @world = World.new(Player.new("P1",Location.new(0,3)),Player.new("P2",Location.new(9,3)))
 
   end
@@ -338,56 +331,45 @@ class GameWindow < Gosu::Window
           draw_quad(j* 100 ,  i * 100 , Gosu::Color.argb(0xff00ff00), (j * 100) + 100, i * 100, Gosu::Color.argb(0xff00ff00), j * 100, (i * 100) + 100, Gosu::Color.argb(0xff00ff00), (j * 100) + 100, (i * 100) + 100, Gosu::Color.argb(0xff00ff00), z = 0, mode = :default)
           if @world.getPlayerOne().getCity().getLocation().eql?(Location.new(j,i))
             @cityImage.draw(j*100,i*100,0)
-            @font.draw("Health: " + @world.getPlayerOne().getCity().getHealth().to_s,j*100,i*100,0, factor_x=1,factor_y=1,color = 0xffff0f00, mode = :default)
+            @font.draw(@world.getPlayerOne().getCity().getHealth(),j*100,i*100,0, factor_x=1,factor_y=1,color = 0xffff0f00, mode = :default)
             @font.draw(@world.getPlayerOne().getName(),j*100,i*110,0, factor_x=1,factor_y=1,color = 0xffff0f00, mode = :default)
 
           elsif @world.getPlayerTwo().getCity().getLocation().eql?(Location.new(j,i))
             @cityImage.draw(j*100,i*100,0)
-            @font.draw("Health: " + @world.getPlayerTwo().getCity().getHealth().to_s,j*100,i*100,0, factor_x=1,factor_y=1,color = 0xffff0f00, mode = :default)
+            @font.draw(@world.getPlayerTwo().getCity().getHealth(),j*100,i*100,0, factor_x=1,factor_y=1,color = 0xffff0f00, mode = :default)
             @font.draw(@world.getPlayerTwo().getName(),j*100,i*110,0, factor_x=1,factor_y=1,color = 0xffff0f00, mode = :default)
 
           end
-
-            #first player
+          #first player
           @world.getPlayerOne().getRegimes().each do |regime|
            
             if(regime.getType().getName() == "Scissor")
               @scissorImage.draw(regime.getLocation().getX*100,regime.getLocation().getY*100,0)
-              @font.draw(regime.getSoldNum().to_s + " men",regime.getLocation().getX*100,regime.getLocation().getY*100 + 80 ,0, factor_x=1,factor_y=1,color = 0xffffffff, mode = :default)
 
             elsif(regime.getType().getName() == "Rock")
               @rockImage.draw(regime.getLocation().getX*100,regime.getLocation().getY*100,0)
-              @font.draw(regime.getSoldNum().to_s + " men",regime.getLocation().getX*100,regime.getLocation().getY*100 + 80 ,0, factor_x=1,factor_y=1,color = 0xffffffff, mode = :default)
 
             elsif(regime.getType().getName() == "Paper")
               @paperImage.draw(regime.getLocation().getX*100,regime.getLocation().getY*100,0)
-              @font.draw(regime.getSoldNum().to_s + " men",regime.getLocation().getX*100,regime.getLocation().getY*100 + 80 ,0, factor_x=1,factor_y=1,color = 0xffffffff, mode = :default)
-
+              
 
             end
 
-            @font.draw(@world.getPlayerOne.getName(), regime.getLocation.getX*100,regime.getLocation().getY*100,0, factor_x=1,factor_y=1,color = 0xffff0f00, mode = :default) 
+            @font.draw(@world.getPlayerOne.getName() + " " + regime.getSoldNum().to_s + " men",regime.getLocation().getX*100,regime.getLocation().getY*100,0, factor_x=1,factor_y=1,color = 0xffff0f00, mode = :default)
           end
           #second player
           @world.getPlayerTwo().getRegimes().each do |regime|
 
             if(regime.getType().getName() == "Scissor")
               @scissorImage.draw(regime.getLocation().getX*100,regime.getLocation().getY*100,0)
-              @font.draw(regime.getSoldNum().to_s + " men",regime.getLocation().getX*100,regime.getLocation().getY*100 + 80 ,0, factor_x=1,factor_y=1,color = 0xffffffff, mode = :default)
-        
+              
             elsif(regime.getType().getName() == "Rock")
               @rockImage.draw(regime.getLocation().getX*100,regime.getLocation().getY*100,0)
-              @font.draw(regime.getSoldNum().to_s + " men",regime.getLocation().getX*100,regime.getLocation().getY*100 + 80 ,0, factor_x=1,factor_y=1,color = 0xffffffff, mode = :default)
-
+              
             elsif(regime.getType().getName() == "Paper")
               @paperImage.draw(regime.getLocation().getX*100,regime.getLocation().getY*100,0)
-              @font.draw(regime.getSoldNum().to_s + " men",regime.getLocation().getX*100,regime.getLocation().getY*100 + 80 ,0, factor_x=1,factor_y=1,color = 0xffffffff, mode = :default)
-
             end
-            @font.draw(@world.getPlayerTwo.getName(),regime.getLocation().getX*100,regime.getLocation().getY*100,0, factor_x=1,factor_y=1,color = 0x0f0f0fff, mode = :default)
-            if @stage == "move"
-              @font.draw("Yes Master?", @tempLoc.getX*100,@tempLoc.getY*100 + 50 ,0, factor_x=1,factor_y=1,color = 0xffff0000, mode = :default)
-            end
+            @font.draw(@world.getPlayerTwo.getName() + " " + regime.getSoldNum().to_s + " men",regime.getLocation().getX*100,regime.getLocation().getY*100,0, factor_x=1,factor_y=1,color = 0xffff0f00, mode = :default)
           end
         end
       end
@@ -406,31 +388,19 @@ class GameWindow < Gosu::Window
           draw_line(coords[0],coords[1] + 100, Gosu::Color.argb(0xffff0000), coords[0] + 100, coords[1] + 100, Gosu::Color.argb(0xffff0000), z = 0, mode = :default)
         end
       end
-      if @msg == "Welcome"
-        @rpsIntro.play
-        @font.draw("Welcome to RPS: Ultimate Battles of all Time", 100,100,0, factor_x=1,factor_y=1,color=0xffff0000, mode = :default)
-        @font.draw("Click City to Recruit Your Army", 100, 140, 0,  factor_x=1,factor_y=1,color = 0xffff0f00, mode = :default)
-        @font.draw("DESTROY YOUR OPPONENT CITY", 100, 180, 0, factor_x=1, factor_y=1, color = 0xffff0000, mode = :default)
-      else
-        @font.draw(@msg,0,40,0, factor_x=1,factor_y=1,color = 0xffff0f00, mode = :default)
-      end
-      promptPlayer = ""
+      @font.draw(@msg,480,40,0, factor_x=1,factor_y=1,color = 0xffff0f00, mode = :default)
+      
       if @stage == "recruit"
-        promptPlayer = "Recruit by clicking city, or click one of your regiments to select them!"
+        ##do something
       elsif @stage == "move"
-        promptPlayer = "Click an adjacent square to selected regiment to move or ATTACK"
+        ##do something
       elsif @stage == "placement"
-        promptPlayer = "Place your new Regiment next to your city!"
+        ##do something
       end
-        @font.draw(promptPlayer,380,60,0, factor_x=1,factor_y=1,color = 0xffff0f00, mode = :default)
-        if @stage == "placement"
-         @font.draw("You Selected " + @choice , 480, 80, 0, factor_x=1, factor_y=1, color = 0xffff0000, mode = :default)
-        end
+
       if @playerTurn == 1
         @font.draw("It is Player One's turn!",480,20,0, factor_x=1,factor_y=1,color = 0xffff0f00, mode = :default)
-    
       elsif @playerTurn == 2
-       
         @font.draw("It is Player Two's turn!",480,20,0, factor_x=1,factor_y=1,color = 0xffff0f00, mode = :default)
       end
 
@@ -441,8 +411,6 @@ class GameWindow < Gosu::Window
       end
       
     elsif @state == "recruit"
-    @font.draw("Select Your Regiment You will get Regiment of 75 and lose 75 health", 100, 180, 0, factor_x=1, factor_y=1, color = 0xffff0000, mode = :default)
- 
       draw_quad(0 ,  0 , Gosu::Color.argb(0xffffffff), 400, 0, Gosu::Color.argb(0xffffffff), 0, 100, Gosu::Color.argb(0xffffffff), 400, 100, Gosu::Color.argb(0xffffffff), z = 0, mode = :default)
       @rockImage.draw(0,0,0)
       @paperImage.draw(100,0,0)
@@ -490,59 +458,45 @@ class GameWindow < Gosu::Window
             end
           end
         elsif @stage == "move"
+          puts @RegimeToMove.getLocation.getX
           if @RegimeToMove == nil
             @stage = "recruit"
           elsif !(@RegimeToMove.getLocation.isAdjacent(@tempLoc))
             @stage = "recruit"
             @msg = "invalid selection must move regiment to adjacent square"
-          elsif @tempLoc.eql?(@oppCityPosition)
+          elsif @RegimeToMove.eql?(@oppCityPosition)
                  @world.getPlayer(@opp).getCity.damageCity(@RegimeToMove.getSoldNum)
                  @turn = @turn + 1  
                  @attacked = true
-                 @battleSound.play
-                 @RegimeToMove = nil
-                 @msg = "The city is under ATTACK!"
                  whoseTurn()
-          elsif (@tempLoc.eql?(@curPlayerCityPosition))
-            @msg =  "You cant move there! We'll go back to recruit phase"
-            @stage = "recruit"
-            @blocked = true
-            #@RegimeToMove = nil
+          elsif (@RegimeToMove.getLocation.eql?(@curPlayerCityPosition))
+            puts "weee"
           else
             @oppRegimes.each do |regime|
                    if regime.getLocation().eql?(Location.new(@X,@Y))
                      @RegimeToMove.fight(regime)
                      @attacked = true
-                     #@RegimeToMove = nil
                      @turn = @turn + 1
-                     @battleSound.play
-                     @msg = "What a FIGHT!"
                      whoseTurn()
                    end
                  end
                  if @attacked == false
                    @curPlRegimes.each do |regime|
                      if regime.getLocation().eql?(Location.new(@X,@Y))
-                       if ( @RegimeToMove and regime.getName == @RegimeToMove.getName)
+                       if regime.getType.eql?(@RegimeToMove.getType)
                          regime.addSold(@RegimeToMove.getSoldNum)
                          @world.getPlayer(@pl).removeRegime(@RegimeToMove)
                          @turn = @turn + 1
                          whoseTurn()
-                        # @RegimeToMove = nil
                          @alreadyMoved = true
-                        break
+                         break
                        else
-                         @blocked = true  
-                         @msg =  "You cant move there! We'll go back to recruit phase"
-                         @stage = "recruit"
-                         @RegimeToMove = nil
+                         @blocked = true   
                      end  
                    end
                    if !(@blocked or (@alreadyMoved or @attacked))
                      @RegimeToMove.move(@tempLoc)
-                     @RegimeToMove = nil
                      @turn = @turn + 1
-                     @msg = "Oh what strategy and cunning!"
                      whoseTurn()
                    end
                  end 
@@ -552,14 +506,10 @@ class GameWindow < Gosu::Window
           if @tempLoc.isAdjacent(@world.getPlayer(@pl).getCity.getLocation)
              @curPlRegimes.each do |regime|
                if regime.getLocation().eql?(@tempLoc)
-                 if regime.getName == @choice
+                 if regime.getLocation.getName == choice
                       ##addSoldiers
-                   @world.getPlayer(@pl).getCity().damageCity(75)                
-                   puts "the lotion"
-                      regime.addSold(75)
                       @turn = @turn + 1
                       whoseTurn()
-                      @blocked = true
                  else
                    @blocked = true
                  end
@@ -575,7 +525,6 @@ class GameWindow < Gosu::Window
                 @world.getPlayer(@pl).addRegime(Rock.new,75,@tempLoc)
                 @world.getPlayer(@pl).getCity().damageCity(75)
                 @turn = @turn + 1
-                @rockSound.play
                 whoseTurn()
                 @stage = "recruit"
                 @state = "normal"
@@ -584,29 +533,24 @@ class GameWindow < Gosu::Window
                 @world.getPlayer(@pl).getCity().damageCity(75)                
                 @turn = @turn + 1  
                 whoseTurn()
-                @paperSound.play
                 @stage = "recruit" 
                 @state = "normal"
               elsif @choice == "Scissor"
                 @world.getPlayer(@pl).addRegime(Scissor.new,75,@tempLoc)
                 @world.getPlayer(@pl).getCity().damageCity(75) 
                 @turn = @turn + 1
-                @scissorsSound.play
                 whoseTurn()
                 @stage = "recruit"
                 @state = "normal"
               end
             end
-          else
-            @stage = "recruit"
-            @msg = "Looks like your having trouble placing regime, lets go back..."
           end
         end
       elsif @state == "recruit"
-        
         puts "test"
         @choice = ""
         if mouse_x < 100
+          puts "poo"
           @choice = "Rock"
           @state = "normal"
           @stage = "placement"
@@ -631,17 +575,8 @@ class GameWindow < Gosu::Window
   def update
     if @world.getPlayerOne().getCity().isDead()
       @winner = "PLAYER TWO"
-      if @playOnce
-        player2wins.play
-        @playOnce = false
-      end
-      @stage = "end"
     elsif @world.getPlayerTwo().getCity().isDead()
       @winner = "PLAYER ONE"
-      if @playOnce
-        @playOnce = false
-        @player1wins.play
-      end
     end
   end
   def whoseTurn
@@ -651,7 +586,6 @@ class GameWindow < Gosu::Window
       if @pl == 1
         @pl = 2
         @opp = 1
-       
         @playerTurn = 2
       else
         @pl = 1
